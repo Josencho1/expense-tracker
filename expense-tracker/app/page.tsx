@@ -3,18 +3,20 @@
 import { useState, useEffect } from 'react';
 import { Expense, FilterState } from '@/types/expense';
 import { getExpenses } from '@/lib/storage';
-import { filterExpenses, exportToCSV } from '@/lib/utils';
+import { filterExpenses } from '@/lib/utils';
 import Dashboard from '@/components/Dashboard';
 import ExpenseChart from '@/components/ExpenseChart';
 import ExpenseFilter from '@/components/ExpenseFilter';
 import ExpenseList from '@/components/ExpenseList';
 import ExpenseForm from '@/components/ExpenseForm';
+import CloudExportModal from '@/components/CloudExportModal';
 import { Plus, Wallet } from 'lucide-react';
 
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [showCloudExport, setShowCloudExport] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [filters, setFilters] = useState<FilterState>({
     dateRange: { from: null, to: null },
@@ -53,7 +55,7 @@ export default function Home() {
   };
 
   const handleExport = () => {
-    exportToCSV(filteredExpenses);
+    setShowCloudExport(true);
   };
 
   const handleCancel = () => {
@@ -114,6 +116,13 @@ export default function Home() {
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
           editingExpense={editingExpense}
+        />
+      )}
+
+      {showCloudExport && (
+        <CloudExportModal
+          expenses={expenses}
+          onClose={() => setShowCloudExport(false)}
         />
       )}
 

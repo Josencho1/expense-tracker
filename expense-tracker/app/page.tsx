@@ -9,12 +9,14 @@ import ExpenseChart from '@/components/ExpenseChart';
 import ExpenseFilter from '@/components/ExpenseFilter';
 import ExpenseList from '@/components/ExpenseList';
 import ExpenseForm from '@/components/ExpenseForm';
+import AdvancedExportModal from '@/components/AdvancedExportModal';
 import { Plus, Wallet } from 'lucide-react';
 
 export default function Home() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [showAdvancedExport, setShowAdvancedExport] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
   const [filters, setFilters] = useState<FilterState>({
     dateRange: { from: null, to: null },
@@ -53,7 +55,7 @@ export default function Home() {
   };
 
   const handleExport = () => {
-    exportToCSV(filteredExpenses);
+    setShowAdvancedExport(true);
   };
 
   const handleCancel = () => {
@@ -114,6 +116,13 @@ export default function Home() {
           onSubmit={handleFormSubmit}
           onCancel={handleCancel}
           editingExpense={editingExpense}
+        />
+      )}
+
+      {showAdvancedExport && (
+        <AdvancedExportModal
+          expenses={expenses}
+          onClose={() => setShowAdvancedExport(false)}
         />
       )}
 
